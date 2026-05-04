@@ -1,0 +1,18 @@
+platform: 'containerlab'
+fabric:
+  name: 'fb-1tier-dxl'
+  hardware: 'containerlab'
+
+  network: 'fb-1tier-dxl_mgt'
+  ipv4subnet: '192.168.200.0/24'
+  ipv4gw: '192.168.200.1'
+
+  nodes:
+    - { node_name: 'myleaf01', kind: 'srl', type: 'ixr-d3l', mgmt_ipv4: '192.168.200.2',  binds: 'myleaf01.cfg:/home/admin/fb.cfg', exec: 'sr_cli source /home/admin/fb.cfg', labels: '4', image: 'ghcr.io/nokia/srlinux:24.7.2' }
+    - { node_name: 'myleaf02', kind: 'srl', type: 'ixr-d3l', mgmt_ipv4: '192.168.200.3',  binds: 'myleaf02.cfg:/home/admin/fb.cfg', exec: 'sr_cli source /home/admin/fb.cfg', labels: '4', image: 'ghcr.io/nokia/srlinux:24.7.2' }
+  web_ssh: True
+  ssh:
+    - { kind: 'linux', image: 'netreplica/graphite:webssh2', mgmt_ipv4: '192.168.200.250', GRAPHITE_DEFAULT_TYPE: 'clab', GRAPHITE_DEFAULT_TOPO: 'fb-1tier-dxl', CLAB_SSH_CONNECTION: '${SSH_CONNECTION}', binds: '.:/htdocs/clab', ports: '8080' }
+  links:
+    - { local_device: 'myleaf01:e1-29', remote_device: 'myleaf02:e1-29' }
+    - { local_device: 'myleaf01:e1-30', remote_device: 'myleaf02:e1-30' }

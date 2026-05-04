@@ -1,0 +1,346 @@
+---
+enable_custom_command: False
+config_management:
+  enable_commit: True
+  commit_mode: save
+  commit_timeout: 600
+  save_checkpoint: True
+  delete_all: True
+  convert_to_yang_paths: False
+checkpoint_name: FB_2026_02_24-17_53_25_PM
+system_ip: 10.0.0.2/32
+platform: 'IXR'
+fabric:
+  role: leaf
+  hardware: IXR_D3L
+  version: '24.7.2'
+  hostname: "myleaf02"
+  eda_hostname: "myleaf02"
+  rackid: 1 
+  nodeid: 1
+  topology_index: 2
+  hash_seed: 2562
+  vtep: True
+  addressing:
+    preferred_ipfamily: IPv4
+    mgmt_ip: 192.168.200.3/24
+    mgmt_netmask: 24
+    mgmt_gw: 192.168.200.1
+
+
+
+system:
+  aaa:
+    authentication:
+      method: ['tacacs', 'local']        
+      exit_on_reject: False
+      idle_timeout: 600
+      password:
+        aging: 0
+        history: 4
+        change_on_first_login: False
+        complexity_rules:
+          minimum_length: 8
+          maximum_length: 1023
+          minimum_lowercase: 1
+          minimum_uppercase: 1
+          minimum_numeric: 1
+          minimum_special_character: 1
+          allow_username: True
+        lockout_policy:
+          attempts: 3
+          time: 1
+          lockout: 15
+    server_groups:
+      tacacs:
+        enable: True
+        timeout: 2
+        servers:
+          - { ip: '192.168.10.13', network_instance: 'mgmt', port: 49}
+          - { ip: '192.168.10.14', network_instance: 'mgmt', port: 49}
+
+ssh:
+  - { ssh_time_out: 900, ssh_rate_limit: 3, ssh_network_instance: "mgmt", ssh_admin_state: "enable" }
+
+time_zone: UTC
+ntp_network_instance: "mgmt"
+
+
+
+ntp_server_list:
+  - {host: '192.168.10.11', iburst: 'False' , prefer: 'True' }
+  - {host: '192.168.10.12', iburst: 'False' , prefer: 'False' }
+
+dns_domain: "mydomain.com"
+dns_server_list: 
+  - '192.168.10.10'
+dns_network_instance: "mgmt"
+
+oper_groups_list:
+  - {'name': 'oper-group-uplinks', 'admin_state': 'enable', 'upython_script': 'oper-group.py', 'hold_down_time': 90000, 'required_up_uplinks': 1}
+  - {'name': 'oper-group-ebgp', 'admin_state': 'disable', 'upython_script': 'oper-group-bgp.py', 'hold_down_time': 20000, 'required_up_uplinks': 1}
+  - {'name': 'oper-group-ibgp', 'admin_state': 'disable', 'upython_script': 'oper-group-bgp.py', 'hold_down_time': 5000, 'required_up_uplinks': 1}
+
+default_port_mtu: 9412
+default_l2_mtu: 9412
+default_ip_mtu: 9394
+
+motd_banner: |-
+  ................................................................
+  :                   1-Tier Topology (IXR-D3L)                  :
+  ................................................................
+
+
+ethernet_segments: { es_boot_timer: 10, es_activation_timer: 3 }
+
+
+gnmi:
+- enable: False
+  timeout: 7200
+  rate_limit: 60
+  session_limit: 20
+  network_instance: "mgmt"
+  port: 57400
+  use_authentication: True
+  commit_confirmed_timeout: 0
+  commit_save: False
+  include_defaults: False
+  source_address:
+    - '192.168.200.3'
+
+json_rpc:
+  network_instance: 'mgmt'
+  commit_confirmed_timeout: 0
+  http:
+    enable: False
+    use_authentication: True
+    port: 80
+    session_limit: 10
+    source_address:
+      - '192.168.200.3'
+  https:
+    enable: False
+    use_authentication: True
+    port: 443
+    session_limit: 10
+    source_address:
+      - '192.168.200.3'
+  
+router:
+  breakout_list:
+  interface_list:
+    - { node: 'leaf01', description: 'to-leaf01_01', address: {'ipv4': '169.254.0.1/31'}, interface: 'ethernet-1/29', admin_state: 'enable', ddm: False, lldp: True, fec: 'rs-528', speed: '100G' }
+    - { node: 'leaf01', description: 'to-leaf01_02', address: {'ipv4': '169.254.0.3/31'}, interface: 'ethernet-1/30', admin_state: 'enable', ddm: False, lldp: True, fec: 'rs-528', speed: '100G' }
+
+
+edge_interfaces:
+  interface_list:
+    - { node: 'leaf02', interface: 'ethernet-1/1', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/2', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/3', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/4', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/5', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/6', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/7', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/8', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/9', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/10', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/11', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/12', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/13', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/14', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/15', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/16', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/17', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/18', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/19', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/20', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/21', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/22', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/23', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/24', speed: '4x25G', description: "Edge links to computes" , ddm: False, fec: 'rs-108', tails: [1, 2, 3, 4], admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/27', speed: '100G', ddm: False, fec: 'rs-528', lag_id: '1' , admin_state: 'enable', lldp: True, direction: 'downlink' }
+    - { node: 'leaf02', interface: 'ethernet-1/28', speed: '100G', ddm: False, fec: 'rs-528', lag_id: '1' , admin_state: 'enable', lldp: True, direction: 'downlink' }
+  lag_list:
+    - {
+        lag_id: '1',
+        direction: 'downlink',
+        node: 'leaf02',
+        speed: '100G',
+        description: 'Upstream PE',
+        lacp: True,
+        lacp_fallback: False,
+        lacp_fallback_mode: static,
+        lacp_fallback_timeout: 10,
+        admin_state: enable,
+        multihoming: False,
+        system_id_mac: '0A:00:00:02:00:01',
+        system_priority: 1,
+        multihoming_pair: 'myleaf02'
+      }
+
+
+underlay:
+  isl:
+    vlan_id: 1
+    mode: address_pool
+    ipv6:
+      router_advertisement:
+        max_advertisement_interval: 10
+        min_advertisement_interval: 3
+  protocol: ebgp
+  bgp: 
+    asn: '64602'
+    ecmp_multipath_level: 64
+    neighbor_list:
+      - { address: '169.254.0.0', peer_as: '64601', admin_state: 'enable' }
+      - { address: '169.254.0.2', peer_as: '64601', admin_state: 'enable' }
+
+evpn:
+  protocol: ibgp
+  bgp:
+    rr:
+      asn: '65501'
+      location: 'external'
+      neighbor_list:
+        - 10.0.0.1
+
+
+evpn_services:
+  ip_vrf_offset: 0 
+  mac_vrf_offset: 10000 
+  ip_vrf_list:
+      
+    - id: 1
+      name: "L3-1-MY_IP_VRF_Tagged"
+      router: "R1" 
+      description: "L3-NET 1 MY_IP_VRF_Tagged" 
+      type: "evpn" 
+      evi: 1 
+      vni: 1 
+      ecmp: 8 
+
+      
+    - id: 2
+      name: "L3-2-MY_IP_VRF_Untagged"
+      router: "R1" 
+      description: "L3-NET 2 MY_IP_VRF_Untagged" 
+      type: "evpn" 
+      evi: 2 
+      vni: 2 
+      ecmp: 8 
+
+      
+    - id: 3
+      name: "L3-3-MY_IP_VRF_Optional"
+      router: "R1" 
+      description: "L3-NET 3 MY_IP_VRF_Optional" 
+      type: "evpn" 
+      evi: 3 
+      vni: 3 
+      ecmp: 8 
+
+  mac_vrf_list:
+    
+ 
+    - id: 2
+      name: "L2-2-MY_L3_Tagged"
+      type: "evpn" 
+      description: "L2-NET 2 MY_L3_Tagged" 
+      evi: 10002 
+      vni: 10002 
+      ecmp: 8 
+      mac_age_time: 300
+      mac_limit_maximum_entries: 250
+      mac_limit_warning_threshold: 95
+      mac_duplication:
+        enable: enable 
+        monitoring_window: 3 
+        num_moves: 5 
+        hold_down_time: 9 
+        action: oper-down 
+      vrf_name: "L3-1-MY_IP_VRF_Tagged"
+      vrf_id: 1
+      subnet:
+        ipv4: 172.16.10.0/24
+        ipv4_gw: 172.16.10.1/24
+        mac: 06:00:00:01:00:02
+        mtu: 9000
+        bfd: 
+          enable: True
+          desired_minimum_transmit_interval: 100000
+          detection_multiplier: 3
+          required_minimum_receive: 100000
+          minimum_echo_receive_interval: 0
+      proxy_arp: False
+      interface_list:
+        - 'ethernet-1/1/1.200'
+    
+ 
+    - id: 3
+      name: "L2-3-MY_L3_Untagged"
+      type: "evpn" 
+      description: "L2-NET 3 MY_L3_Untagged" 
+      evi: 10003 
+      vni: 10003 
+      ecmp: 8 
+      mac_age_time: 300
+      mac_limit_maximum_entries: 250
+      mac_limit_warning_threshold: 95
+      mac_duplication:
+        enable: enable 
+        monitoring_window: 3 
+        num_moves: 5 
+        hold_down_time: 9 
+        action: oper-down 
+      vrf_name: "L3-2-MY_IP_VRF_Untagged"
+      vrf_id: 2
+      subnet:
+        ipv4: 172.16.20.0/24
+        ipv4_gw: 172.16.20.1/24
+        mac: 06:00:00:02:00:03
+        mtu: 9000
+        bfd: 
+          enable: True
+          desired_minimum_transmit_interval: 100000
+          detection_multiplier: 3
+          required_minimum_receive: 100000
+          minimum_echo_receive_interval: 0
+      proxy_arp: False
+      interface_list:
+        - 'ethernet-1/1/2.0'
+    
+ 
+    - id: 4
+      name: "L2-4-MY_L3_Optional"
+      type: "evpn" 
+      description: "L2-NET 4 MY_L3_Optional" 
+      evi: 10004 
+      vni: 10004 
+      ecmp: 8 
+      mac_age_time: 300
+      mac_limit_maximum_entries: 250
+      mac_limit_warning_threshold: 95
+      mac_duplication:
+        enable: enable 
+        monitoring_window: 3 
+        num_moves: 5 
+        hold_down_time: 9 
+        action: oper-down 
+      vrf_name: "L3-3-MY_IP_VRF_Optional"
+      vrf_id: 3
+      subnet:
+        ipv4: 172.16.30.0/24
+        ipv4_gw: 172.16.30.1/24
+        mac: 06:00:00:03:00:04
+        mtu: 9000
+        bfd: 
+          enable: True
+          desired_minimum_transmit_interval: 100000
+          detection_multiplier: 3
+          required_minimum_receive: 100000
+          minimum_echo_receive_interval: 0
+      proxy_arp: False
+      interface_list:
+        - 'ethernet-1/1/3.0'
+

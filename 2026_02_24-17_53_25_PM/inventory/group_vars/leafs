@@ -1,0 +1,234 @@
+---
+qos:
+  ingress:
+    - id: '25'
+      description: 'DCIP L3 Fabric Server Access QoS Policy'
+      policy_name: 'DCIP-ING-SERVER-QoS'
+      num_qos_classifiers: '6'
+      fc_list:
+        - af:
+            dot1p: '2'
+        - be:
+        - ef:
+            dscp: 'ef'
+        - h1:
+        - h2:
+            dscp: 'af41'
+        - l1:
+            dot1p: '3'
+        - l2:
+        - nc:
+            dscp: 'nc2'
+    - id: '100'
+      description: 'DCIP L3 Fabric 100G network ingress QoS Policy'
+      policy_name: 'DCIP-ING-NW-QoS'
+      num_qos_classifiers: '8'
+      fc_list:
+        - be:
+        - af:
+            dot1p: '2'
+        - l1:
+            dot1p: '3'
+        - l2:
+            dot1p: '1'
+        - h1:
+            dot1p: '6'
+        - h2:
+            dot1p: '4'
+        - ef:
+            dot1p: '5'
+        - nc:
+            dot1p: '7'
+  egress:
+    - id: '25'
+      description: 'DCIP L3 Fabric Server Access QoS Policy'
+      policy_name: 'DCIP-EGR-SERVER-QoS'
+      fc_list:
+        - be:
+            queue:
+              id: '1'
+              bw: '9000000'
+            multipoint_queue:
+              id: '11'
+              bw: '1000000'
+            dot1p_in_profile: '0'
+            dot1p_out_profile: '0'
+            dscp_in_profile: 'be'
+            dscp_out_profile: 'be'
+            sched_wrr_weight: '1'
+        - af:
+            queue:
+              id: '3'
+              bw: '225000'
+            multipoint_queue:
+              id: '13'
+              bw: '25000'
+            dot1p_in_profile: '2'
+            dot1p_out_profile: '2'
+            dscp_in_profile: 'af11'
+            dscp_out_profile: 'af12'
+            sched_wrr_weight: '1'
+        - l1:
+            queue:
+              id: '4'
+              bw: '4275000'
+            multipoint_queue:
+              id: '14'
+              bw: '475000'
+            dot1p_in_profile: '3'
+            dot1p_out_profile: '3'
+            dscp_in_profile: 'af21'
+            dscp_out_profile: 'af22'
+            sched_wrr_weight: '1'
+        - l2:
+            queue:
+              id: '2'
+              bw: '2250000'
+            multipoint_queue:
+              id: '12'
+              bw: '250000'
+            dot1p_in_profile: '1'
+            dot1p_out_profile: '1'
+            dscp_in_profile: 'cs1'
+            dscp_out_profile: 'cs1'
+            sched_wrr_weight: '1'
+        - h1:
+            queue:
+              id: '7'
+              bw: '225000'
+            multipoint_queue:
+              id: '17'
+              bw: '25000'
+            dot1p_in_profile: '6'
+            dot1p_out_profile: '6'
+            dscp_in_profile: 'nc1'
+            dscp_out_profile: 'nc1'
+        - h2:
+            queue:
+              id: '5'
+              bw: '1125000'
+            multipoint_queue:
+              id: '15'
+              bw: '125000'
+            dot1p_in_profile: '4'
+            dot1p_out_profile: '4'
+            dscp_in_profile: 'af41'
+            dscp_out_profile: 'af42'
+        - ef:
+            queue:
+              id: '6'
+              bw: '4500000'
+            multipoint_queue:
+              id: '16'
+              bw: '500000'
+            dot1p_in_profile: '5'
+            dot1p_out_profile: '5'
+            dscp_in_profile: 'ef'
+            dscp_out_profile: 'ef'
+        - nc:
+            queue:
+              id: '8'
+              bw: '225000'
+            multipoint_queue:
+              id: '18'
+              bw: '25000'
+            dot1p_in_profile: '7'
+            dot1p_out_profile: '7'
+            dscp_in_profile: 'nc2'
+            dscp_out_profile: 'nc2'
+    - id: '100'
+      description: 'DCIP L3 Fabric 100G network egress QoS Policy'
+      policy_name: 'DCIP-EGR-NW-QOS'
+      fc_list:
+        - be:
+            queue:
+              id: '1'
+              bw: '36000000'
+            multipoint_queue:
+              id: '11'
+              bw: '4000000'
+            dot1p_in_profile: '0'
+            dot1p_out_profile: '0'
+            dscp_in_profile: 'be'
+            dscp_out_profile: 'be'
+            sched_wrr_weight: '1'
+        - af:
+            queue:
+              id: '3'
+              bw: '900000'
+            multipoint_queue:
+              id: '13'
+              bw: '100000'
+            dot1p_in_profile: '2'
+            dot1p_out_profile: '2'
+            dscp_in_profile: 'af11'
+            dscp_out_profile: 'af12'
+            sched_wrr_weight: '1'
+        - l1:
+            queue:
+              id: '4'
+              bw: '17100000'
+            multipoint_queue:
+              id: '14'
+              bw: '1900000'
+            dot1p_in_profile: '3'
+            dot1p_out_profile: '3'
+            dscp_in_profile: 'af21'
+            dscp_out_profile: 'af22'
+            sched_wrr_weight: '1'
+        - l2:
+            queue:
+              id: '2'
+              bw: '9000000'
+            multipoint_queue:
+              id: '12'
+              bw: '1000000'
+            dot1p_in_profile: '1'
+            dot1p_out_profile: '1'
+            dscp_in_profile: 'cs1'
+            dscp_out_profile: 'cs1'
+            sched_wrr_weight: '1'
+        - h1:
+            queue:
+              id: '7'
+              bw: '900000'
+            multipoint_queue:
+              id: '17'
+              bw: '100000'
+            dot1p_in_profile: '6'
+            dot1p_out_profile: '6'
+            dscp_in_profile: 'nc1'
+            dscp_out_profile: 'nc1'
+        - h2:
+            queue:
+              id: '5'
+              bw: '4500000'
+            multipoint_queue:
+              id: '15'
+              bw: '500000'
+            dot1p_in_profile: '4'
+            dot1p_out_profile: '4'
+            dscp_in_profile: 'af41'
+            dscp_out_profile: 'af42'
+        - ef:
+            queue:
+              id: '6'
+              bw: '18000000'
+            multipoint_queue:
+              id: '16'
+              bw: '2000000'
+            dot1p_in_profile: '5'
+            dot1p_out_profile: '5'
+            dscp_in_profile: 'ef'
+            dscp_out_profile: 'ef'
+        - nc:
+            queue:
+              id: '8'
+              bw: '900000'
+            multipoint_queue:
+              id: '18'
+              bw: '100000'
+            dot1p_in_profile: '7'
+            dot1p_out_profile: '7'
+            dscp_in_profile: 'nc2'
+            dscp_out_profile: 'nc2'

@@ -1,0 +1,254 @@
+---
+platform: IXR
+system:
+  default_ip_mtu: 9394
+  banners:
+    motd: |-
+      ................................................................
+      :                   1-Tier Topology (IXR-D3L)                  :
+      ................................................................
+
+  
+  dns:
+    dns_domain: "mydomain.com"
+    servers:
+      - {ip: 192.168.10.10}
+
+  aaa:
+    authentication:
+      exit_on_reject: False
+      idle_timeout: 600
+      admin_user:
+        password: 'NokiaSrl1!'
+    server_groups:
+      tacacs:
+        enable: True
+        timeout: 2
+        servers:
+          - { ip: '192.168.10.13', network_instance: 'mgmt', port: 49}
+          - { ip: '192.168.10.14', network_instance: 'mgmt', port: 49}
+  time:
+    zone: UTC
+    ntp:
+      servers:
+        - {'ip': '192.168.10.11'}
+        - {'ip': '192.168.10.12'}
+  login:
+password:
+  aging: 0
+  history: 4
+  change_on_first_login: False
+  lockout_policy:
+    attempts: 3
+    time: 1
+    lockout: 15
+  complexity_rules:
+    minimum_length: 8
+    maximum_length: 1023
+    minimum_lowercase: 1
+    minimum_uppercase: 1
+    minimum_numeric: 1
+    minimum_special_character: 1
+    allow_username: True
+ssh_pwauth: true
+disable_root: false
+
+
+ixr_software_versions:
+- 24.7.2
+- 
+- 
+- 
+
+  fabric_abstraction:
+    enabled: True
+    labels:
+      underlay: {}
+      underlay_isl: {}
+      leaf: {}
+      spine: {}
+      superspine: {}
+      borderleaf: {}
+  enable_default_qos: True
+
+edge_labels_to_interfaces:
+  - interface: [ethernet-1/1/1]
+    name: Tagged
+    node: leaf01
+  - interface: [ethernet-1/1/1]
+    name: Tagged
+    node: leaf02
+  - interface: [ethernet-1/1/2]
+    name: Untagged
+    node: leaf01
+  - interface: [ethernet-1/1/2]
+    name: Untagged
+    node: leaf02
+  - interface: [ethernet-1/1/3]
+    name: Optional
+    node: leaf01
+  - interface: [ethernet-1/1/3]
+    name: Optional
+    node: leaf02
+  - interface: [lag1]
+    name: UPLINK_PE1
+    node: leaf01
+  - interface: [lag1]
+    name: UPLINK_PE2
+    node: leaf02
+
+
+vlan_to_edge_labels:
+  - vlan: 100
+    label: ALL_DOWNLINKS
+    macvrf_id: 1
+  - vlan: 200
+    label: Tagged
+    macvrf_id: 2
+  - vlan: 0
+    label: Untagged
+    macvrf_id: 3
+  - vlan: 0
+    label: Optional
+    macvrf_id: 4
+
+mac_vrf_details:
+  - id: 1
+    evi: 10001
+    vni: 10001
+  - id: 2
+    evi: 10002
+    vni: 10002
+    vrf_id: 1
+  - id: 3
+    evi: 10003
+    vni: 10003
+    vrf_id: 2
+  - id: 4
+    evi: 10004
+    vni: 10004
+    vrf_id: 3
+
+roles_in_fabric:
+- leaf
+
+mgmt_addressing:
+  pool_name: mgmt-pool
+  ipv4:
+  - subnet: 192.168.200.0/24
+    gw: 192.168.200.1/24
+    reservations: []
+    allocations: []
+  ipv6:
+
+loopback_addressing:
+  pool_name: loopback-pool
+  ipv4:
+  - subnet: 10.0.0.0/24
+    reservations: []
+    allocations: []
+  ipv6:
+
+isl_addressing:
+  ipv4_allocations: False
+  ipv6_allocations: False
+  pool_name: isl-pool
+  ipv4:
+  - 169.254.0.0/16
+  ipv6:
+
+
+hostname_map:
+  leaf01: myleaf01
+  leaf02: myleaf02
+
+defaultbgpgroup_rr:
+  asn_base: 65501
+  neighbor_list: []
+  external: False
+
+
+build_vars:
+  fabric_cabling:
+    - {downlink: 1/29, local_device: leaf01, remote_device: leaf02, uplink: 1/29}
+    - {downlink: 1/30, local_device: leaf01, remote_device: leaf02, uplink: 1/30}
+
+  evpn_services:
+    ip_vrf_list:
+    - {id: 1, name: MY_IP_VRF_Tagged}
+    - {id: 2, name: MY_IP_VRF_Untagged}
+    - {id: 3, name: MY_IP_VRF_Optional}
+    mac_vrf_list:
+    - id: 1
+      labels:
+      - {name: ALL_DOWNLINKS, vlan_id: 100}
+      name: MY_STANDALONE_VLAN
+    - id: 2
+      ip_vrf_id: 1
+      labels:
+      - {name: Tagged, vlan_id: 200}
+      name: MY_L3_Tagged
+      subnet: {bfd: true, ipv4: 172.16.10.0/24}
+    - id: 3
+      ip_vrf_id: 2
+      labels:
+      - {name: Untagged, vlan_id: 0}
+      name: MY_L3_Untagged
+      subnet: {bfd: true, ipv4: 172.16.20.0/24}
+    - id: 4
+      ip_vrf_id: 3
+      labels:
+      - {name: Optional, vlan_id: 0}
+      name: MY_L3_Optional
+      subnet: {bfd: true, ipv4: 172.16.30.0/24}
+
+  edge_lags:
+    - {description: Upstream PE, lag_id: '1', nodes: 'leaf[1-2]', speed: 100G}
+
+
+protocols:
+  underlay: ebgp
+  evpn: ibgp
+
+vlans:
+  isl_vlan_id: 1
+
+bgp_timers:
+  evpn:
+    connect_retry: 10
+    hold_time:  0
+    keepalive: 1
+    min_route_advertisement: 1
+  underlay:
+    connect_retry: 10
+    hold_time:  0
+    keepalive: 1
+    min_route_advertisement: 1
+
+bfd:
+  evpn:
+    enable: True
+    desired_minimum_transmit_interval: 100000
+    detection_multiplier: 3
+    required_minimum_receive: 100000
+    minimum_echo_receive_interval: 0
+  underlay:
+    enable: True
+    desired_minimum_transmit_interval: 100000
+    detection_multiplier: 3
+    required_minimum_receive: 100000
+    minimum_echo_receive_interval: 0
+
+json_rpc:
+  network_instance: 'mgmt'
+  commit_confirmed_timeout: 0
+  http:
+    enable: False
+    use_authentication: True
+    port: 80
+    session_limit: 10
+  https:
+    enable: False
+    use_authentication: True
+    port: 443
+    session_limit: 10

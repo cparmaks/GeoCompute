@@ -1,0 +1,5 @@
+---
+platform: 'oper_group'
+fabric:
+    hardware: 'oper_group'
+    fss_release: 'oper_group'

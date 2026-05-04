@@ -1,0 +1,21 @@
+---
+1tier-svr-01:
+    username: 
+    password: 
+    platform: linux
+    hostname: 192.168.200.21
+1tier-svr-02:
+    username: 
+    password: 
+    platform: linux
+    hostname: 192.168.200.22
+myleaf01:
+    username: admin
+    password: NokiaSrl1!
+    platform: srl
+    hostname: 192.168.200.2
+myleaf02:
+    username: admin
+    password: NokiaSrl1!
+    platform: srl
+    hostname: 192.168.200.3

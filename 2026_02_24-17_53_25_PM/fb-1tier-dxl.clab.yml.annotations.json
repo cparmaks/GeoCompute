@@ -1,0 +1,43 @@
+{
+  "freeTextAnnotations": [],
+  "freeShapeAnnotations": [],
+  "groupStyleAnnotations": [],
+  "networkNodeAnnotations": [],
+  "nodeAnnotations": [
+    {
+      "level": 3,
+      "id": "myleaf01",
+      "position": {
+        "x": 420,
+        "y": 280
+      }
+    },
+    {
+      "level": 3,
+      "id": "myleaf02",
+      "position": {
+        "x": 600,
+        "y": 280
+      }
+    },
+    {
+      "level": 4,
+      "id": "1tier-svr-01",
+      "position": {
+        "x": 420,
+        "y": 480
+      }
+    },
+    {
+      "level": 4,
+      "id": "1tier-svr-02",
+      "position": {
+        "x": 600,
+        "y": 480
+      }
+    }
+  ],
+  "edgeAnnotations": [],
+  "aliasEndpointAnnotations": [],
+  "viewerSettings": {}
+}

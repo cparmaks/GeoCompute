@@ -1,0 +1,36 @@
+localhost ansible_python_interpreter=/usr/bin/python3
+
+[all_servers:children]
+event_handlers
+leafs
+container_labs
+
+[all_servers:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+[ipfabric:children]
+event_handlers
+leafs
+container_labs
+
+
+[ipfabric:vars]
+ansible_python_interpreter=/usr/bin/python3
+[event_handlers]
+event_handler
+
+
+
+[leafs]
+myleaf01 ansible_host=192.168.200.2
+myleaf02 ansible_host=192.168.200.3
+[leafs:vars]
+ansible_command_timeout=600
+ansible_connection=ansible.netcommon.httpapi
+ansible_network_os=nokia.srlinux.srlinux
+ansible_user=admin
+ansible_password=NokiaSrl1!
+
+
+[container_labs]
+fb-1tier-dxl

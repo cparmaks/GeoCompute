@@ -1,0 +1,91 @@
+{
+    "srl_nokia-interfaces:interface": [
+        {
+            "name": "mgmt0",
+            "admin-state": "enable",
+            "subinterface": [
+                {
+                    "index": 0,
+                    "admin-state": "enable",
+                    "ipv4": {
+                        "admin-state": "enable",
+                        "address": [
+                            {
+                                "ip-prefix": "192.168.200.3/24"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ],
+    "srl_nokia-system:system": {
+        "srl_nokia-aaa:aaa": {
+            "authentication": {
+                "authentication-method": [
+                    "local"
+                ]
+            },
+            "server-group": [
+                {
+                    "name": "local",
+                    "type": "srl_nokia-aaa-types:local"
+                }
+            ]
+        },
+        "srl_nokia-boot:boot": {
+            "autoboot": {
+                "admin-state": "disable"
+            }
+        },
+        "srl_nokia-ssh:ssh-server": [
+            {
+                "name": "ssh-mgmt",
+                "admin-state": "enable",
+                "network-instance": "mgmt"
+            }
+        ]
+    },
+    "srl_nokia-network-instance:network-instance": [
+        {
+            "name": "mgmt",
+            "type": "srl_nokia-network-instance:ip-vrf",
+            "admin-state": "enable",
+            "description": "Management network instance",
+            "interface": [
+                {
+                    "name": "mgmt0.0"
+                }
+            ],
+            "protocols": {
+                "srl_nokia-linux:linux": {
+                    "import-routes": true,
+                    "export-routes": true,
+                    "export-neighbors": true
+                }
+            },
+            "srl_nokia-static-routes:static-routes": {
+                "route": [
+                    {
+                        "prefix": "0.0.0.0/0",
+                        "next-hop-group": "grp1"
+                    }
+                ]
+            },
+            "srl_nokia-next-hop-groups:next-hop-groups": {
+                "group": [
+                    {
+                        "name": "grp1",
+                        "admin-state": "enable",
+                        "nexthop": [
+                            {
+                                "index": 1,
+                                "ip-address": "192.168.200.1"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
